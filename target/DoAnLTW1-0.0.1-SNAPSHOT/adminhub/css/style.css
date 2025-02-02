@@ -1,0 +1,72 @@
+.font-25 {
+  	font-size: 25px;
+}
+
+.font-17 {
+  	font-size: 17.5px;
+}
+
+.font-45 {
+  	font-size: 45px;
+}
+
+.bg-lightgreen {
+	background-color: #82ae46 !important;
+}
+
+.bg-container {
+  	background-color: #e9ecf2;
+}
+
+.hover-green:hover {
+	transition: 0.3s ease-in-out;
+  	background-color: #82ae46 !important;
+}
+
+.pad-none {
+  	padding: 0;
+}
+
+.mar-b--25 {
+  	margin-bottom: -25px;
+}
+
+.mar-none {
+  	margin: 0;
+}
+
+.m-50 {
+  	margin-left: 80%;
+}
+
+.width-100 {
+  	width: 100px;
+}
+
+.width-50 {
+  	width: 50%;
+}
+
+.username {
+	background-color: #82ae46;
+}
+
+.no-border {
+  	border: none;
+}
+
+.hide {
+  	width: 50px;
+}
+
+.imageTitle {
+	width: 150px;
+}
+
+.imageUrl img {
+	width: 150px;
+}
+
+.imageUrl {
+	width: 150px;
+}

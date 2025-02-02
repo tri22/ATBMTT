@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: #edf2f9;
+}
+
+.bg-color-blue{
+   background-color:  rgba(44, 123, 229,1);
+}
+
+.profile-dropdown{
+    position: relative;
+    background-color: #fff;
+    width: fit-content;
+    padding: 0 -20px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+.bold-text{
+    font-weight: 600;
+}
+
+.boldless-text{
+    font-weight: 500;
+}
+
+.font-20{
+    font-size: 20px;
+}
+
+.font-25{
+    font-size: 25px;
+}
+
+.product-list ,.order-list, .employee-list ,.voucher-list{
+    padding-top: 5px !important;
+    padding-left: 12px !important;
+}
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 450px; /* Đảm bảo modal không quá rộng */
+    text-align: center;
+}
+
+/* Nút đóng và các nút khác */
+.close, .cancel, .submit {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus,
+.modalCancel:hover,
+.modalCancel:focus,
+.modalSubmit:hover,
+.modalSubmit:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Nút cancel và submit */
+.modalCancel, .modalSubmit {
+    color: white;
+    background-color: #444;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    float: none;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.modalSubmit {
+    background-color: #ff4444;
+}
+
+.text-black{
+    color: black;
+    text-decoration: none;
+}
+
+.pending{
+    background-color: #fde6d8;
+    padding:5px 2px;
+    border-radius: 15px;
+    color: #ac5a2b;
+    font-weight: 600;
+}
+
+.complete{
+    background-color: #d9f8eb;
+    padding:5px 2px;
+    border-radius: 15px;
+    color: #00894f;
+    font-weight: 600;
+}
+
+.error {
+    color: #e74c3c;
+    display: none;
+    font-size: 12px;
+    margin-top: 5px;
+}
+input:invalid, select:invalid {
+    border-color: #e74c3c;
+    background-color: #fce4e4;
+}
+
+input:valid, select:valid {
+    border-color: #2ecc71;
+    background-color: #eaffea;
+}

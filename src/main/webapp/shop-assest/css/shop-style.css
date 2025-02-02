@@ -1,0 +1,811 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", Arial, sans-serif;
+    background: #fff;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* phần css dùng chung */
+
+.row {
+    display: flex;
+}
+
+.col {
+    padding: 0 15px;
+}
+
+/* có 4 cột bằng nhau */
+.col-4 {
+    width: 25%;
+}
+
+/* 2 cột bằng nhau */
+.col-2 {
+    width: 50%;
+}
+
+.text-shadow {
+    text-shadow: 1px 1px 1px #808080;
+}
+
+/* Header 1 */
+#header1 {
+    background-color: #82ae46;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.container {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
+
+    #header1 .container-head1 .inf {
+        flex-basis: 0;
+        flex-grow: 1;
+    }
+}
+
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+#header1 .head1-subnav {
+    padding-right: 15px;
+    padding-left: 15px;
+    display: flex !important;
+    margin-right: -30px;
+    margin-left: -30px;
+}
+
+#header1 .head1-subnav .inf {
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding-right: 24px;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    padding-left: 15px;
+}
+
+@media (max-width: 768px) {
+    #header1 .head1-subnav .inf {
+        margin-bottom: 10px;
+    }
+
+    #header1 .head1-subnav {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+
+#header1 .inf .head1-icon {
+    margin-right: 0.5rem;
+    color: #fff;
+}
+
+#header1 .inf p {
+    color: white;
+}
+
+/* Kết thức Header 1 */
+
+/* Bắt đầu header2 */
+/* xử lí script */
+#header2.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    margin-top: -130px;
+    background: #fff;
+    box-shadow: 0 0 10px 0 rgb(0 0 0 / 10%);
+}
+
+#header2.sticky.visible {
+    transition: 0.3s all ease;
+    margin-top: 0;
+}
+
+#header2.sticky .brofoods {
+    color: #000;
+}
+
+#header2.sticky.visible .list-head2 .list-item-head2 .nav-link {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+#header2.sticky.visible .list-head2 .list-item-head2 .nav-link {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+#header2.sticky.visible .list-head2 .list-item-head2 .nav-link.shop {
+    color: #82ae46;
+}
+
+#header2.sticky.visible .list-head2 .list-item-head2 .nav-link.icon-cart {
+    background-color: #82ae46;
+    color: #fff;
+}
+
+@media (max-width: 992px) {
+    #header2.sticky.visible button {
+        outline: none;
+        color: gray;
+    }
+
+    #header2.sticky.visible .list-head2 .list-item-head2 .nav-link {
+        color: #000;
+    }
+}
+
+/* end script */
+
+#header2>.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#header2 .brofoods {
+    color: #82ae46;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 20px;
+    transition: .3s all ease;
+    text-decoration: none;
+}
+
+#header2 .brofoods:hover {
+    color: #000000;
+}
+
+@media (max-width: 992px) {
+    #header2 {
+        background-color: #000;
+        padding: 10px 15px;
+        display: flex;
+        align-content: center;
+        flex-wrap: wrap;
+    }
+
+    #header2 .brofoods {
+        color: #fff;
+        margin-right: 16px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    #header2 button {
+        border: none;
+        background-color: transparent;
+        color: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        padding: 4px 0px 4px 12px;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    #header2 button i {
+        font-size: 22px;
+        position: relative;
+        display: inline-block;
+        top: 2px;
+    }
+
+    #header2 .list-display-none {
+        display: none;
+        flex-grow: 1;
+        flex-basis: 100%;
+    }
+
+    #header2 .list-display-none .list-head2 {
+        flex-direction: column;
+    }
+
+    #header2 .list-display-none .list-head2>.list-item-head2>.nav-link {
+        padding-left: 0;
+        padding-right: 0;
+        padding-top: 14px !important;
+        padding-bottom: 14px !important;
+        color: rgba(255, 255, 255, 0.7);
+        transition: 0.3s all ease;
+    }
+
+    #header2 .list-display-none .list-head2 .nav-link:hover {
+        transition: 0.3s all ease;
+        color: #fff;
+    }
+
+    #header2 li:hover .wrap-shop-list {
+        position: unset !important;
+    }
+
+    #header2 .list-display-none .list-head2>.list-item-head2>.shop {
+        color: #fff;
+    }
+
+    #header2 .list-display-none .list-head2 .icon-cart {
+        background-color: #82ae46;
+        color: #fff !important;
+    }
+
+    #header2 .list-display-none .list-head2 .js-login {
+        background-color: transparent;
+    }
+}
+
+#header2 .list-display-none .list-head2 {
+    margin-left: auto;
+    display: flex;
+    list-style: none;
+}
+
+#header2 .list-display-none .list-head2 .nav-link {
+    font-size: 10px;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#header2 li:hover .wrap-shop-list {
+    margin-top: 2px;
+    display: block;
+    position: absolute;
+    padding: 0.5rem 0;
+    background-color: #fff;
+    box-shadow: 0px 10px 34px -20px rgb(0 0 0 / 41%);
+}
+
+#header2 .list-item-head2 .wrap-shop-list {
+    display: none;
+    z-index: 1;
+}
+
+#header2 .list-item-head2 .wrap-shop-list li {
+    padding: 4px 24px;
+    display: block;
+    line-height: normal;
+    width: 160px;
+}
+
+#header2 .wrap-shop-list .shop-list a {
+    font-size: 14px;
+    width: 100%;
+    display: block;
+    text-decoration: none;
+    color: #000;
+    line-height: 1.8;
+}
+
+@media (min-width: 992px) {
+    #header2 button {
+        display: none;
+    }
+
+    #header2 .list-display-none {
+        display: block !important;
+    }
+}
+
+@media (max-width: 270px) {
+    #header2 {
+        height: 92px;
+    }
+
+    #header2 {
+        margin-top: -12px;
+    }
+}
+
+#header2 .list-item-head2 .bi-cart-fill {
+    font-style: normal;
+}
+
+#header2 .list-item-head2 .js-login {
+    background: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#header2 .list-item-head2 .js-login .bi-person-fill {
+    font-size: 15px;
+    line-height: 15px;
+}
+
+/* Kết thức header 2 */
+
+/* Bắt đầu silder */
+#slider {
+    background: url('https://technext.github.io/vegefoods/images/bg_1.jpg');
+    padding: 160px 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+#slider .container .content {
+    color: #fff;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    display: flex;
+    text-align: center;
+    max-width: 75%;
+    position: relative;
+    width: 100%;
+}
+
+#slider .content .content-info {
+    display: inline-flex;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 3px;
+}
+
+#slider .content .content-info a {
+    color: #fff;
+    margin-right: 0.5rem !important;
+    text-decoration: none;
+}
+
+#slider .content .product-header {
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* Kết thức silder */
+
+/* bắt đầu phần content của shop */
+#content-shop {
+    padding: 90px 0px;
+}
+
+#content-shop .menu-content {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 46px;
+}
+
+#content-shop .menu-content .category li {
+    line-height: 28px;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.menu-content .category a {
+    padding: 5px 20px;
+    text-decoration: none;
+    color: #82ae46;
+    font-weight: 400;
+    border-radius: 5px
+}
+
+#content-shop .category .category-link {
+    background-color: #82ae46;
+    color: #fff;
+}
+
+#content-shop .product {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+#content-shop .product .products-select {
+    position: relative;
+    display: block;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 100%;
+}
+
+/* Điều chỉnh độ dài khi thu/phóng cho products-select */
+@media (min-width: 768px) {
+    .products-select {
+        max-width: 50%;
+    }
+}
+
+@media (min-width: 990px) {
+    .products-select {
+        max-width: 25%;
+    }
+}
+
+/* End */
+
+#content-shop .img-wrapper {
+    border: 1px solid #f0f0f0;
+    margin-bottom: 30px;
+}
+
+#content-shop .img-wrapper .product-img {
+    position: relative;
+    display: flex;
+    overflow: hidden;
+}
+
+#content-shop .img-wrapper .product-img img {
+    cursor: pointer;
+    max-width: 100%;
+    vertical-align: middle;
+    transition: all 0.3s ease;
+}
+
+#content-shop .img-wrapper .product-img .product-status {
+    position: absolute;
+    color: #fff;
+    font-weight: 300;
+    background: #82ae46;
+    font-size: 12px;
+    padding: 2px 10px;
+    line-height: 21.6px;
+}
+
+#content-shop .img-wrapper .product-cost {
+    text-align: center;
+    position: relative;
+    padding: 16px 16px 24px 16px;
+}
+
+#content-shop .img-wrapper .product-cost h3 {
+    font-size: 13px;
+    margin-bottom: 5px;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 21px;
+}
+
+#content-shop .img-wrapper .product-cost a {
+    color: #000;
+    text-decoration: none;
+}
+
+#content-shop .img-wrapper .product-cost .price {
+    width: 100%;
+    color: #82ae46;
+    font-weight: 400;
+    transition: all 0.5s ease;
+}
+
+.price .price-origin {
+    display: inline-block;
+}
+
+.price .price-sale {
+    text-decoration: line-through;
+    display: inline-block;
+    color: #b3b3b3;
+    margin-right: 8px;
+}
+
+#content-shop .img-wrapper .product-cost .out-of-stock {
+	position: relative;
+	opacity: 0;
+	margin-top: -28px;
+	text-transform: uppercase;
+    color: red;
+    transition: 0.3s all ease;
+}
+
+#content-shop .img-wrapper:hover .product-cost .out-of-stock {
+	opacity: 1;
+}
+
+#content-shop .product-cost .option {
+    position: absolute;
+    bottom: 7px;
+    left: 0;
+    right: 0;
+    transition: all 0.5s ease;
+    opacity: 0;
+}
+
+#content-shop .product-cost .option .wrap-option {
+    display: flex;
+    justify-content: center;
+}
+
+#content-shop .option .wrap-option a {
+    display: flex;
+    color: #fff;
+    background: #82ae46;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+#content-shop .option .wrap-option i {
+    font-size: 12px;
+}
+
+#content-shop .option .wrap-option .icon-shopping {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+}
+
+/* Phần hover cho hình ảnh */
+#content-shop .img-wrapper:hover {
+    box-shadow: 0px 7px 15px -5px rgb(0 0 0 / 7%);
+
+}
+
+#content-shop .img-wrapper:hover .option {
+    opacity: 1;
+}
+
+#content-shop .img-wrapper:hover .price {
+    opacity: 0;
+}
+
+#content-shop .img-wrapper:hover .product-img img {
+    transform: scale(1.1);
+}
+/* kết thức phần content của shop */
+
+/* Css Home Subribe */
+#home-subcribe {
+    background-color: #f7f6f2;
+}
+
+#home-subcribe h2 {
+    font-size: 1.375rem;
+    line-height: 1.5;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+#home-subcribe p {
+    font-size: 0.9375rem;
+    color: #808080;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: .5px;
+}
+
+#home-subcribe .subcribe-container {
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding-top: 75px;
+    padding-bottom: 75px;
+    margin: 0 15px;
+}
+
+#home-subcribe .subcribe-input {
+    outline-style: none;
+    font-size: 0.9375rem;
+    width: 447px;
+    border: none;
+    padding: 6px 15px;
+}
+
+#home-subcribe .form-group {
+    height: 52px;
+}
+
+#home-subcribe .subcribe-submit {
+    background-color: #82ae46;
+    border-style: none;
+    cursor: pointer;
+    width: 92px;
+    line-height: 52px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* End Home Subcribe */
+
+/* <----------------------------------------------FOOTER CSS ------------------------------------------------------> */
+#footer {
+    height: 570px;
+    padding: 96px 0;
+    background-color: #fff;
+    position: relative;
+}
+
+#footer .scoll-btn-wrapper {
+    position: absolute;
+    background-color: #82ae46;
+    height: 60px;
+    width: 60px;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    transition-delay: 0.3s;
+}
+
+#footer .scoll-icon {
+    color: #fff;
+    font-size: 20px;
+    padding: 0 20px;
+    line-height: 60px;
+}
+
+#footer .scoll-icon-wheel {
+    animation: 1.6s ease infinite wheel-up-down;
+}
+
+@keyframes wheel-up-down {
+    100% {
+        margin-top: -8px;
+        opacity: 1;
+    }
+
+    30% {
+        opacity: 1;
+    }
+
+    0% {
+        margin-top: 10px;
+        opacity: 0;
+    }
+}
+
+
+#footer .footer-container {
+    margin: 0 100px;
+}
+
+#footer .footer-content-wrapper {
+    justify-content: space-evenly;
+    margin: 0 -15px 48px -15px;
+}
+
+#footer .footer-discription {
+    flex-basis: 250px;
+}
+
+#footer .footer-menu {
+    flex-basis: 160px;
+}
+
+#footer .footer-help {
+    flex-basis: 300px;
+
+}
+
+#footer .footer-question {
+    flex-basis: 240px;
+}
+
+#footer .help-content .help-left-content {
+    flex-basis: 170px;
+    flex-wrap: nowrap;
+}
+
+#footer .dsc-content,
+#footer .menu-content,
+#footer .help-content,
+#footer .question-content,
+#footer .footer-copyright {
+    margin-bottom: 16px;
+    font-weight: 500;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+#footer .dsc-content p {
+    margin-bottom: 16px;
+}
+
+#footer .menu-content a {
+    padding: 8px 0;
+    display: block;
+}
+
+#footer .help-content a {
+    padding: 8px 0;
+    display: block;
+}
+
+#footer h2 {
+    margin-bottom: 20px;
+    font-weight: 550;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 1px;
+}
+
+#footer li,
+#footer a {
+    text-decoration: none;
+    list-style: none;
+    color: black;
+}
+
+#footer .footer-social-icon {
+    margin: 48px 0 16px 0;
+}
+
+#footer .fb-icon-wrapper,
+#footer .tw-icon-wrapper,
+#footer .ins-icon-wrapper {
+    height: 50px;
+    width: 50px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 50%;
+    margin-right: 16px;
+}
+
+#footer .fb-icon-wrapper span {
+    line-height: 50px;
+    font-size: 1.625rem;
+    padding: 0 16px;
+}
+
+#footer .tw-icon-wrapper span,
+#footer .ins-icon-wrapper span {
+    line-height: 50px;
+    font-size: 1.625rem;
+    padding: 0 13px;
+}
+
+#footer .question-address {
+    display: flex;
+}
+
+#footer .question-address span,
+#footer .question-mail span,
+#footer .question-phone span {
+    margin-right: 8px;
+}
+
+#footer .footer-copyright {
+    margin-top: 60px;
+    justify-content: center;
+    letter-spacing: 1px;
+}
+
+/* <-------------------------------------End Footer-------------------------------------> */

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>DoAnLTW</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <servlet-name>ShopController</servlet-name>
+    <servlet-class>controller.ShopController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ShopController</servlet-name>
+    <url-pattern>/ShopController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AdminController</servlet-name>
+    <servlet-class>controller.AdminController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminController</servlet-name>
+    <url-pattern>/AdminController</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>AddProductController</servlet-name>
+    <servlet-class>controller.AddProductController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AddProductController</servlet-name>
+    <url-pattern>/AddProductController</url-pattern>
+  </servlet-mapping>
+   <servlet>
+    <servlet-name>MyOrderController</servlet-name>
+    <servlet-class>controller.MyOrderController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MyOrderController</servlet-name>
+    <url-pattern>/MyOrderController</url-pattern>
+  </servlet-mapping>
+</web-app>
