@@ -25,14 +25,17 @@
     <servlet-name>AdminController</servlet-name>
     <url-pattern>/AdminController</url-pattern>
   </servlet-mapping>
-  <servlet>
+
+<!-- <servlet>
     <servlet-name>AddProductController</servlet-name>
     <servlet-class>controller.AddProductController</servlet-class>
-  </servlet>
-  <servlet-mapping>
+</servlet>
+
+<servlet-mapping>
     <servlet-name>AddProductController</servlet-name>
     <url-pattern>/AddProductController</url-pattern>
-  </servlet-mapping>
+</servlet-mapping> -->
+
    <servlet>
     <servlet-name>MyOrderController</servlet-name>
     <servlet-class>controller.MyOrderController</servlet-class>

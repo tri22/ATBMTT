@@ -1,10 +1,13 @@
 package dao;
 
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -29,46 +32,70 @@ public class DAO {
 			ps = conn.prepareStatement(query);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				list.add(new Product(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5),
-						 rs.getDouble(6), rs.getDouble(7),new Category(rs.getInt(8), null),rs.getBlob(9)));
-			}
+	            Product product = new Product();
+	            product.setId(rs.getInt("id"));
+	            product.setName(rs.getString("name"));
+	            product.setDescription(rs.getString("description"));
+	            product.setPrice(rs.getDouble("price"));
+	            product.setSale(rs.getDouble("sale"));
+	            product.setWeight(rs.getInt("weight"));
+	            product.setCategory(getCategoryById(rs.getInt("category_Id")) );
+
+	            Blob imageBlob = rs.getBlob("image");
+	            if (imageBlob != null) {
+	                byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+	                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+	                product.setImageBase64(base64Image);
+	            }
+
+	            list.add(product);
+	        }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
 	}
 
-	public List<Product> getProductsByPage(int currentPage, int productsPerPage) throws ClassNotFoundException {
+	public List<Product> getProductsByPage(int currentPage, int productsPerPage) throws ClassNotFoundException, SQLException {
 	    List<Product> products = new ArrayList<>();
-	    
-	    // Câu SQL đã được sửa lại sử dụng LIMIT và OFFSET
-	    String sql = "SELECT * FROM products LIMIT ?, ?";
+	    String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
 
-	    try (Connection conn = new DBContext().getConnection();
-	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+	    try (
+	    	Connection	conn = new DBContext().getConnection();
+	        PreparedStatement ps = conn.prepareStatement(sql)) {
 	        
-	        // Tính toán offset và limit
 	        int offset = (currentPage - 1) * productsPerPage;
-	        stmt.setInt(1, offset); // Đặt giá trị OFFSET
-	        stmt.setInt(2, productsPerPage); // Đặt giá trị LIMIT
-	        
-	        try (ResultSet rs = stmt.executeQuery()) {
-	            while (rs.next()) {
-	                Product product = new Product();
-	                // Gán các giá trị vào đối tượng product
-	                product.setId(rs.getInt("id"));
-	                product.setName(rs.getString("name"));
-	                product.setPrice(rs.getDouble("price"));
-	                product.setImage(rs.getBlob("image"));
-	                products.add(product);
+	        ps.setInt(1, productsPerPage);
+	        ps.setInt(2, offset);
+
+	        ResultSet rs = ps.executeQuery();
+	        while (rs.next()) {
+	            int id = rs.getInt("id");
+	            String name = rs.getString("name");
+	            String description = rs.getString("description");
+	            double price = rs.getDouble("price");
+	            int weight = rs.getInt("weight");
+	            double rating = rs.getDouble("rating");
+	            double sale = rs.getDouble("sale");
+	            Category category = getCategoryById(rs.getInt("category_Id"));
+	            
+	            // Xử lý ảnh từ Blob
+	            Blob imageBlob = rs.getBlob("image");
+	            String base64Image = "";
+	            if (imageBlob != null) {
+	                byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+	                base64Image = Base64.getEncoder().encodeToString(imageBytes);
 	            }
+	            
+	            
+	            Product product = new Product(id, description, name, price, weight, rating, sale, category, imageBlob);
+	            product.setImageBase64(base64Image); // Đặt thêm ảnh base64 để hiển thị
+	            
+	            products.add(product);
 	        }
-	    } catch (SQLException e) {
-	        e.printStackTrace();
 	    }
 	    return products;
 	}
-
 
 	public int getTotalProducts() {
 		int totalProducts = 0;
@@ -88,23 +115,6 @@ public class DAO {
 		return totalProducts;
 	}
 
-	public List<Category> getAllCategory() {
-		List<Category> list = new ArrayList<Category>();
-		String query = "select * from categories";
-
-		try {
-			conn = new DBContext().getConnection();
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				list.add(new Category(rs.getInt(1), rs.getBoolean(2),rs.getString(3)));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list;
-	}
-
 	public List<Product> getProductByCateId(String cateId) {
 		List<Product> list = new ArrayList<Product>();
 		String query = "select * from products\n" + "where cateId = ?";
@@ -115,8 +125,8 @@ public class DAO {
 			ps.setString(1, cateId);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				list.add(new Product(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5),
-						 rs.getDouble(6), rs.getDouble(7),new Category(rs.getInt(8), null),rs.getBlob(9)));
+				list.add(new Product(rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5), rs.getDouble(6),
+						rs.getDouble(7), new Category(rs.getInt(8), null), rs.getBlob(9)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,13 +143,126 @@ public class DAO {
 			ps.setString(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Product(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5),
-						 rs.getDouble(6), rs.getDouble(7),new Category(rs.getInt(8), null),rs.getBlob(9));
+				return new Product(rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5), rs.getDouble(6),
+						rs.getDouble(7), new Category(rs.getInt(8), null), rs.getBlob(9));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public List<Product> getProductByName(String name) {
+		List<Product> list = new ArrayList<Product>();
+		String query = "select * from product\n" + "where name like ?";
+
+		try {
+			conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(query);
+			ps.setString(1, "%" + name + "%");
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				list.add(new Product(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5),
+						rs.getDouble(6), rs.getDouble(7), new Category(rs.getInt(8), null), rs.getBlob(9)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public void deleteProduct(String id) {
+		String query = "delete products\n" + "where id = ?";
+
+		try {
+			conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(query);
+			ps.setString(1, id);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void insertProduct(String description, String name, double price, int weight, double sale,
+            int categoryId, InputStream imageStream) throws ClassNotFoundException {
+    String query = "INSERT INTO products (name, description, price, weight, sale, category_id, image) "
+            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+        ps.setString(1, name);
+        ps.setString(2, description);
+        ps.setDouble(3, price);
+        ps.setInt(4, weight);
+        ps.setDouble(5, sale);
+        ps.setInt(6, categoryId);
+        
+        if (imageStream != null) {
+            ps.setBinaryStream(7, imageStream, imageStream.available());
+        } else {
+            ps.setNull(7, java.sql.Types.BLOB);
+        }
+
+        ps.executeUpdate();
+    } catch (Exception e) {
+        ((Throwable) e).printStackTrace();
+    }
+}
+
+	public void updateProduct(String name, String imageUrl, String price, String sale, String cateId, String content,
+			String weight, String id) {
+		String query = "update products \r\n" + "set [name] = ?, \r\n" + "[imageUrl] = ?,\r\n" + "[price] = ?, \r\n"
+				+ "[sale] = ?, \r\n" + "[cateId] = ?, \r\n" + "[content] = ?, \r\n" + "[weight] = ?\r\n"
+				+ "where id = ?";
+		try {
+			conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(query);
+			ps.setString(1, name);
+			ps.setString(2, imageUrl);
+			ps.setString(3, price);
+			ps.setString(4, sale);
+			ps.setString(5, cateId);
+			ps.setString(6, content);
+			ps.setString(7, weight);
+			ps.setString(8, id);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public List<Category> getAllCategory() {
+		List<Category> list = new ArrayList<Category>();
+		String query = "select * from categories";
+
+		try {
+			conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				list.add(new Category(rs.getInt(1), rs.getBoolean(2), rs.getString(3)));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public Category getCategoryById(int id) throws ClassNotFoundException {
+		String query = "SELECT * FROM categories WHERE id = ?";
+
+		try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+
+			ps.setInt(1, id);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return new Category(rs.getInt("id"), rs.getString("name"));
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null; // Trả về null nếu không tìm thấy danh mục
 	}
 
 	public Account login(String username, String password) {
@@ -184,61 +307,6 @@ public class DAO {
 			ps = conn.prepareStatement(query);
 			ps.setString(1, username);
 			ps.setString(2, password);
-			ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void deleteProduct(String id) {
-		String query = "delete products\n" + "where id = ?";
-
-		try {
-			conn = new DBContext().getConnection();
-			ps = conn.prepareStatement(query);
-			ps.setString(1, id);
-			ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void insertProduct(String name, String imageUrl, String price, String sale, String cateId, String content,
-			String weight) {
-		String query = "insert into products ([name], [imageUrl], [price], [sale], [cateId], [content], [weight])\n"
-				+ "values (?,?,?,?,?,?,?)";
-		try {
-			conn = new DBContext().getConnection();
-			ps = conn.prepareStatement(query);
-			ps.setString(1, name);
-			ps.setString(2, imageUrl);
-			ps.setString(3, price);
-			ps.setString(4, sale);
-			ps.setString(5, cateId);
-			ps.setString(6, content);
-			ps.setString(7, weight);
-			ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void updateProduct(String name, String imageUrl, String price, String sale, String cateId, String content,
-			String weight, String id) {
-		String query = "update products \r\n" + "set [name] = ?, \r\n" + "[imageUrl] = ?,\r\n" + "[price] = ?, \r\n"
-				+ "[sale] = ?, \r\n" + "[cateId] = ?, \r\n" + "[content] = ?, \r\n" + "[weight] = ?\r\n"
-				+ "where id = ?";
-		try {
-			conn = new DBContext().getConnection();
-			ps = conn.prepareStatement(query);
-			ps.setString(1, name);
-			ps.setString(2, imageUrl);
-			ps.setString(3, price);
-			ps.setString(4, sale);
-			ps.setString(5, cateId);
-			ps.setString(6, content);
-			ps.setString(7, weight);
-			ps.setString(8, id);
 			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -322,26 +390,6 @@ public class DAO {
 			e.printStackTrace();
 		}
 	}
-	
-	public List<Product> getProductByName(String name) {
-		List<Product> list = new ArrayList<Product>();
-		String query = "select * from product\n" + "where name like ?";
-
-		try {
-			conn = new DBContext().getConnection();
-			ps = conn.prepareStatement(query);
-			ps.setString(1, "%"+name+"%");
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				list.add(new Product(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5),
-						 rs.getDouble(6), rs.getDouble(7),new Category(rs.getInt(8), null),rs.getBlob(9)));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return list; 
-	}
-
 
 	public List<Order> getOrderByAccId(int accId) {
 		List<Order> list = new ArrayList<Order>();
@@ -353,14 +401,16 @@ public class DAO {
 			ps.setString(1, "accId");
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				list.add(new Order(rs.getInt(1), new Date(rs.getString(2)), 
-						new User(rs.getInt(3), rs.getString(4), rs.getString(5),rs.getString(6)), rs.getString(7), rs.getInt(8)));
+				list.add(new Order(rs.getInt(1), new Date(rs.getString(2)),
+						new User(rs.getInt(3), rs.getString(4), rs.getString(5), rs.getString(6)), rs.getString(7),
+						rs.getInt(8)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return list; 
+		return list;
 	}
+
 	public static void main(String[] args) {
 		DAO dao = new DAO();
 //		dao.inserUserByAccId("123", "123", "05-11-2000", true, "ahjxcbjz", "123gmail.com", 97086574, 2019);

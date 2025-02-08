@@ -13,7 +13,34 @@ public class Product {
 	private double sale;
 	private Category category;
 	private Blob image;
+	
+	// Thêm thuộc tính mới để lưu chuỗi Base64
+    private String imageBase64;
 
+    // Getter và Setter cho imageBase64
+    public String getImageBase64() {
+        return imageBase64;
+    }
+
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
+
+	public Product( String description, String name, double price, int weight, double rating, double sale,
+			Category category, Blob image) {
+		super();
+		this.description = description;
+		this.name = name;
+		this.price = price;
+		this.weight = weight;
+		this.rating = rating;
+		this.sale = sale;
+		this.category = category;
+		this.image = image;
+	}
+	
+	
 
 	public Product(int id, String description, String name, double price, int weight, double rating, double sale,
 			Category category, Blob image) {
@@ -29,7 +56,7 @@ public class Product {
 		this.image = image;
 	}
 
-	
+
 
 	public Product() {
 		// TODO Auto-generated constructor stub

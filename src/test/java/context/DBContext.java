@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBContext {
-	 private static final String URL = "jdbc:mysql://localhost:3306/foodweb";
+	 private static final String URL = "jdbc:mysql://localhost:3306/foodweb?useUnicode=true&characterEncoding=UTF-8";
 	    private static final String USER = "root"; // Thay bằng user của bạn
 	    private static final String PASSWORD = "root"; // Nếu có mật khẩu, nhập vào đây
 

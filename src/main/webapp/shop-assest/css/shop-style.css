@@ -468,6 +468,7 @@ body {
     position: relative;
     display: flex;
     overflow: hidden;
+    
 }
 
 #content-shop .img-wrapper .product-img img {
@@ -475,6 +476,7 @@ body {
     max-width: 100%;
     vertical-align: middle;
     transition: all 0.3s ease;
+    
 }
 
 #content-shop .img-wrapper .product-img .product-status {

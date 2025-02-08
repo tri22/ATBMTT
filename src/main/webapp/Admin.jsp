@@ -33,7 +33,7 @@
                     <button id="product" type="button"  class="btn">Product <i class="bi bi-caret-down-fill"></i></button>
                     <ul class="product-list list-unstyled pl-4 d-none border-bottom" style="width: fit-content">
                         <li><a class="text-black" href="pdList.jsp">Product list</a></li>
-                        <li><a class="text-black" href="addPd.jsp">Add a product</a></li>
+                        <li><a class="text-black" href="AddProduct.jsp">Add a product</a></li>
                     </ul>
                 </li>
                 <li class="justify-content-center">
@@ -54,7 +54,7 @@
                     <button id="voucher" type="button"  class="btn">Voucher <i class="bi bi-caret-down-fill"></i></button>
                     <ul class="voucher-list list-unstyled pl-4 d-none border-bottom" style="width: fit-content">
                         <li><a class="text-black" href="voucherList.jsp">Voucher list</a></li>
-                        <li><a class="text-black" href="addVoucher.jsp">Add a vocher</a></li>
+                        <li><a class="text-black" href="addVoucher.jsp">Add a voucher</a></li>
                     </ul>
                 </li>
             </ul>
