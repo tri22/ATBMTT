@@ -14,6 +14,7 @@ import java.util.List;
 import context.DBContext;
 import entity.Account;
 import entity.Category;
+import entity.Images;
 import entity.Order;
 import entity.Product;
 import entity.User;
@@ -32,69 +33,67 @@ public class DAO {
 			ps = conn.prepareStatement(query);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-	            Product product = new Product();
-	            product.setId(rs.getInt("id"));
-	            product.setName(rs.getString("name"));
-	            product.setDescription(rs.getString("description"));
-	            product.setPrice(rs.getDouble("price"));
-	            product.setSale(rs.getDouble("sale"));
-	            product.setWeight(rs.getInt("weight"));
-	            product.setCategory(getCategoryById(rs.getInt("category_Id")) );
+				Product product = new Product();
+				product.setId(rs.getInt("id"));
+				product.setName(rs.getString("name"));
+				product.setDescription(rs.getString("description"));
+				product.setPrice(rs.getDouble("price"));
+				product.setSale(rs.getDouble("sale"));
+				product.setWeight(rs.getInt("weight"));
+				product.setCategory(getCategoryById(rs.getInt("category_Id")));
 
-	            Blob imageBlob = rs.getBlob("image");
-	            if (imageBlob != null) {
-	                byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
-	                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-	                product.setImageBase64(base64Image);
-	            }
+				Blob imageBlob = rs.getBlob("image");
+				if (imageBlob != null) {
+					byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+					String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+					product.setImageBase64(base64Image);
+				}
 
-	            list.add(product);
-	        }
+				list.add(product);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
 	}
 
-	public List<Product> getProductsByPage(int currentPage, int productsPerPage) throws ClassNotFoundException, SQLException {
-	    List<Product> products = new ArrayList<>();
-	    String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
+	public List<Product> getProductsByPage(int currentPage, int productsPerPage)
+			throws ClassNotFoundException, SQLException {
+		List<Product> products = new ArrayList<>();
+		String sql = "SELECT * FROM products LIMIT ? OFFSET ?";
+		conn = new DBContext().getConnection();
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 
-	    try (
-	    	Connection	conn = new DBContext().getConnection();
-	        PreparedStatement ps = conn.prepareStatement(sql)) {
-	        
-	        int offset = (currentPage - 1) * productsPerPage;
-	        ps.setInt(1, productsPerPage);
-	        ps.setInt(2, offset);
+			int offset = (currentPage - 1) * productsPerPage;
+			ps.setInt(1, productsPerPage);
+			ps.setInt(2, offset);
 
-	        ResultSet rs = ps.executeQuery();
-	        while (rs.next()) {
-	            int id = rs.getInt("id");
-	            String name = rs.getString("name");
-	            String description = rs.getString("description");
-	            double price = rs.getDouble("price");
-	            int weight = rs.getInt("weight");
-	            double rating = rs.getDouble("rating");
-	            double sale = rs.getDouble("sale");
-	            Category category = getCategoryById(rs.getInt("category_Id"));
-	            
-	            // Xử lý ảnh từ Blob
-	            Blob imageBlob = rs.getBlob("image");
-	            String base64Image = "";
-	            if (imageBlob != null) {
-	                byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
-	                base64Image = Base64.getEncoder().encodeToString(imageBytes);
-	            }
-	            
-	            
-	            Product product = new Product(id, description, name, price, weight, rating, sale, category, imageBlob);
-	            product.setImageBase64(base64Image); // Đặt thêm ảnh base64 để hiển thị
-	            
-	            products.add(product);
-	        }
-	    }
-	    return products;
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				int id = rs.getInt("id");
+				String name = rs.getString("name");
+				String description = rs.getString("description");
+				double price = rs.getDouble("price");
+				int weight = rs.getInt("weight");
+				double rating = rs.getDouble("rating");
+				double sale = rs.getDouble("sale");
+				Category category = getCategoryById(rs.getInt("category_Id"));
+
+				// Xử lý ảnh từ Blob
+				Blob imageBlob = rs.getBlob("image");
+				String base64Image = "";
+				if (imageBlob != null) {
+					byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+					base64Image = Base64.getEncoder().encodeToString(imageBytes);
+				}
+
+				Product product = new Product(id, description, name, price, weight, rating, sale, category, imageBlob);
+				product.setImageBase64(base64Image); // Đặt thêm ảnh base64 để hiển thị
+
+				products.add(product);
+			}
+		}
+		return products;
 	}
 
 	public int getTotalProducts() {
@@ -184,30 +183,30 @@ public class DAO {
 		}
 	}
 
-	public void insertProduct(String description, String name, double price, int weight, double sale,
-            int categoryId, InputStream imageStream) throws ClassNotFoundException {
-    String query = "INSERT INTO products (name, description, price, weight, sale, category_id, image) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+	public void insertProduct(String description, String name, double price, int weight, double sale, int categoryId,
+			InputStream imageStream) throws ClassNotFoundException {
+		String query = "INSERT INTO products (name, description, price, weight, sale, category_id, image) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
-        ps.setString(1, name);
-        ps.setString(2, description);
-        ps.setDouble(3, price);
-        ps.setInt(4, weight);
-        ps.setDouble(5, sale);
-        ps.setInt(6, categoryId);
-        
-        if (imageStream != null) {
-            ps.setBinaryStream(7, imageStream, imageStream.available());
-        } else {
-            ps.setNull(7, java.sql.Types.BLOB);
-        }
+		try (Connection conn = new DBContext().getConnection(); PreparedStatement ps = conn.prepareStatement(query)) {
+			ps.setString(1, name);
+			ps.setString(2, description);
+			ps.setDouble(3, price);
+			ps.setInt(4, weight);
+			ps.setDouble(5, sale);
+			ps.setInt(6, categoryId);
 
-        ps.executeUpdate();
-    } catch (Exception e) {
-        ((Throwable) e).printStackTrace();
-    }
-}
+			if (imageStream != null) {
+				ps.setBinaryStream(7, imageStream, imageStream.available());
+			} else {
+				ps.setNull(7, java.sql.Types.BLOB);
+			}
+
+			ps.executeUpdate();
+		} catch (Exception e) {
+			((Throwable) e).printStackTrace();
+		}
+	}
 
 	public void updateProduct(String name, String imageUrl, String price, String sale, String cateId, String content,
 			String weight, String id) {
@@ -265,17 +264,25 @@ public class DAO {
 		return null; // Trả về null nếu không tìm thấy danh mục
 	}
 
-	public Account login(String username, String password) {
-		String query = "select * from account\n" + "where username = ? and password = ?";
+	public User login(String username, String password) {
+		String query = "select * from users\n" + "where username = ? and password = ?";
 		try {
 			conn = new DBContext().getConnection();
 			ps = conn.prepareStatement(query);
 			ps.setString(1, username);
 			ps.setString(2, password);
 			rs = ps.executeQuery();
-
+				
 			while (rs.next()) {
-				return new Account(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4));
+				User user = new User(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getDate("birthday"), rs.getString("address"),
+						rs.getString("email"), rs.getInt("phone"), rs.getString("username"), rs.getString("password"),rs.getString("role"));
+				Blob imageBlob = rs.getBlob("avatar");
+				if (imageBlob != null) {
+					byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+					String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+					user.setImageBase64(base64Image);
+				}
+				return user;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -292,7 +299,7 @@ public class DAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				return new Account(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getBoolean(4));
+				return new Account(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -313,44 +320,71 @@ public class DAO {
 		}
 	}
 
-	public User getUserByAccId(int accId) {
-		String query = "select * from [user]\n" + "where accId = ?";
+	public User getUserById(int Id) {
+		String query = "select * from users\n" + "where id = ?";
 
 		try {
 			conn = new DBContext().getConnection();
 			ps = conn.prepareStatement(query);
-			ps.setInt(1, accId);
+			ps.setInt(1, Id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getDate(4), rs.getBoolean(5),
-						rs.getString(6), rs.getString(7), rs.getInt(8), new Account(rs.getInt(9), null, null, false));
+				User user = new User(rs.getInt("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getDate("birthday"), rs.getString("address"),
+						rs.getString("email"), rs.getInt("phone"), rs.getString("username"), rs.getString("password"),rs.getString("role"));
+				Blob imageBlob = rs.getBlob("avatar");
+				if (imageBlob != null) {
+					byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+					String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+					user.setImageBase64(base64Image);
+				}
+				return user;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
+	public void updateUser(String firstName, String lastName, String birthDay, InputStream avatar, String address,
+	        String email, int phone, int userId, String username, String password) {
+	    String query = "UPDATE users " +
+	                   "SET firstName = ?, " +
+	                   "lastName = ?, " +
+	                   "birthDay = ?, " +
+	                   "avatar = ?, " +
+	                   "address = ?, " +
+	                   "email = ?, " +
+	                   "phone = ?, " +
+	                   "username = ?, " +
+	                   "password = ? " +
+	                   "WHERE Id = ?";  // Đảm bảo userId là cột trong bảng users
 
-	public void updateUser(String firstName, String lastName, String birthDay, boolean gender, String address,
-			String email, int phone, String userId) {
-		String query = "UPDATE [user] " + "SET [firstName] = ?, " + "[lastName] = ?, " + "[birthDay] = ?, "
-				+ "[gender] = ?, " + "[address] = ?, " + "[email] = ?, " + "[phone] = ? " + "WHERE [user].userId = ?";
-		try {
-			conn = new DBContext().getConnection();
-			ps = conn.prepareStatement(query);
-			ps.setString(1, firstName);
-			ps.setString(2, lastName);
-			ps.setString(3, birthDay);
-			ps.setBoolean(4, gender);
-			ps.setString(5, address);
-			ps.setString(6, email);
-			ps.setInt(7, phone);
-			ps.setString(8, userId);
-			ps.executeUpdate();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	    try {
+	        conn = new DBContext().getConnection();
+	        ps = conn.prepareStatement(query);
+
+	        ps.setString(1, firstName);
+	        ps.setString(2, lastName);
+	        ps.setString(3, birthDay);
+
+	        if (avatar != null) {
+	            ps.setBinaryStream(4, avatar, avatar.available());
+	        } else {
+	            ps.setNull(4, java.sql.Types.BLOB);  // Đặt giá trị NULL nếu không có ảnh
+	        }
+
+	        ps.setString(5, address);
+	        ps.setString(6, email);
+	        ps.setInt(7, phone);
+	        ps.setString(8, username);
+	        ps.setString(9, password);
+	        ps.setInt(10, userId);
+
+	        ps.executeUpdate();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
+
 
 	public int getAccIdByUserName(String userName) {
 		String query = "select accId\r\n" + "from account\r\n" + "where username = ?";
@@ -369,7 +403,7 @@ public class DAO {
 		return accId;
 	}
 
-	public void inserUserByAccId(String firstName, String lastName, String birthDay, boolean gender, String address,
+	public void insertUserByAccId(String firstName, String lastName, String birthDay, boolean gender, String address,
 			String email, int phone, String accId) {
 		String query = "INSERT INTO [dbo].[user] ([firstName],[lastName],[birthDay],[gender],[address],[email],[phone],[accId]) VALUES\r\n"
 				+ "(?,?,?,?,?,?,?,?)";
@@ -391,24 +425,87 @@ public class DAO {
 		}
 	}
 
-	public List<Order> getOrderByAccId(int accId) {
+	public List<Order> getOrderByUserId(int Id) {
 		List<Order> list = new ArrayList<Order>();
 		String query = "select * from order\n" + "where userId = ?";
 
 		try {
 			conn = new DBContext().getConnection();
 			ps = conn.prepareStatement(query);
-			ps.setString(1, "accId");
+			ps.setString(1, "Id");
 			rs = ps.executeQuery();
+			User user =getUserById(Id);
 			while (rs.next()) {
-				list.add(new Order(rs.getInt(1), new Date(rs.getString(2)),
-						new User(rs.getInt(3), rs.getString(4), rs.getString(5), rs.getString(6)), rs.getString(7),
-						rs.getInt(8)));
+				list.add(new Order(rs.getInt(1), rs.getDate(Id),user,rs.getString("status"),rs.getDouble("amount"),rs.getString("payment_method")));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return list;
+	}
+
+	public List<Images> getImages(String pageName, String name) throws ClassNotFoundException {
+	    List<Images> images = new ArrayList<>();
+	    String query = "SELECT * FROM images WHERE page_name = ? AND name LIKE ?";
+
+	    try (Connection conn = new DBContext().getConnection();
+	         PreparedStatement ps = conn.prepareStatement(query)) {
+	        
+	        ps.setString(1, pageName);    // Truyền tham số page_name
+	        ps.setString(2, "%" + name + "%");  // Thêm ký tự '%' để tìm tên chứa 'name'
+
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            // Giả sử bạn muốn lấy đường dẫn từ tên ảnh hoặc dữ liệu ảnh
+	        	int imgId = rs.getInt("Id");
+	        	String imgName = rs.getString("name");
+	        	Blob imageBlob = rs.getBlob("image");
+	        	String base64Image ="";
+	        	if (imageBlob != null) {
+	        		byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+		        	base64Image = Base64.getEncoder().encodeToString(imageBytes);
+		        }
+		        Images img = new Images(imgId, imgName, pageName);
+		        img.setImageBase64(base64Image);
+	            images.add(img);  
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return images;
+	}
+	public List<Images> getAllImages(String pageName) throws ClassNotFoundException {
+	    List<Images> images = new ArrayList<>();
+	    String query = "SELECT * FROM images WHERE page_name = ? ";
+
+	    try (Connection conn = new DBContext().getConnection();
+	         PreparedStatement ps = conn.prepareStatement(query)) {
+	        
+	        ps.setString(1, pageName);    // Truyền tham số page_name
+	       
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            // Giả sử bạn muốn lấy đường dẫn từ tên ảnh hoặc dữ liệu ảnh
+	        	int imgId = rs.getInt("Id");
+	        	String imgName = rs.getString("name");
+	        	Blob imageBlob = rs.getBlob("data");
+	        	String base64Image ="";
+	        	if (imageBlob != null) {
+	        		byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+		        	base64Image = Base64.getEncoder().encodeToString(imageBytes);
+		        }
+		        Images img = new Images(imgId, imgName, pageName);
+		        img.setImageBase64(base64Image);
+	            images.add(img);  
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return images;
 	}
 
 	public static void main(String[] args) {

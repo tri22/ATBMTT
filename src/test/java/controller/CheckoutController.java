@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +14,7 @@ import dao.DAO;
 import entity.Account;
 import entity.Product;
 import entity.User;
-
+@WebServlet("/CheckoutController")
 public class CheckoutController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -22,11 +23,11 @@ public class CheckoutController extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		List<Product> listProduct = (List<Product>) session.getAttribute("cart");
-		Account account = (Account) session.getAttribute("account");
-		int accId = account.getAccId();
+		User user = (User) session.getAttribute("user");
+
 
 		DAO dao = new DAO();
-		User user = dao.getUserByAccId(accId);
+	
 
 //		Tính tổng price của cart
 		double totalPrice = 0;
@@ -37,7 +38,6 @@ public class CheckoutController extends HttpServlet {
 		}
 		request.setAttribute("totalPrice", totalPrice);
 		request.setAttribute("user", user);
-		request.setAttribute("account", account);
 		request.setAttribute("listProduct", listProduct);
 		request.getRequestDispatcher("Checkout.jsp").forward(request, response);
 	}

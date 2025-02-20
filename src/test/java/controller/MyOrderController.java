@@ -15,17 +15,17 @@ import entity.Account;
 import entity.Order;
 import entity.User;
 
-
+@WebServlet("/MyOrderController")
 public class MyOrderController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		Account account = (Account) session.getAttribute("account");
-		int accId = account.getAccId();
+		User user = (User) session.getAttribute("user");
+
 
 		DAO dao = new DAO();
-		List<Order> orders = dao.getOrderByAccId(accId);
+		List<Order> orders = dao.getOrderByUserId(user.getUserId());
 		request.setAttribute("orders", orders);
 		request.getRequestDispatcher("MyOrder.jsp").forward(request, response);
 	}

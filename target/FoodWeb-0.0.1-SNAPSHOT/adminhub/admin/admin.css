@@ -1,0 +1,40 @@
+    
+
+.welcome-admin{
+    background-image: url(./img/ecommerce-bg.png);
+    background-size: 230px;
+    background-position: right bottom;
+    z-index: -1;
+    background-repeat: no-repeat;
+    margin-top: 50px;
+    padding: 0 5px;
+}
+
+
+
+.weekly-sale{
+    width: 100%;
+    margin-left: -12px !important;
+    height: 320px;
+}
+
+
+.salemom-container{
+    margin-left: -15px !important;
+    margin-right: -10px !important;
+    height: fit-content;
+}
+
+.total-order{
+    height: 320px;
+    width: 100%;
+    margin-left: 8px !important;
+}
+
+
+.rounded-pill{
+    width: fit-content;
+    height: 25px;
+}
+
+

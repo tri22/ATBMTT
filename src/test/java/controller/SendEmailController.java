@@ -11,6 +11,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,7 @@ import dao.DAO;
 import entity.Account;
 import entity.Product;
 import entity.User;
-
+@WebServlet("/SendEmailController")
 public class SendEmailController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -56,15 +57,13 @@ public class SendEmailController extends HttpServlet {
 
 		HttpSession sess = request.getSession();
 		List<Product> listProduct = (List<Product>) sess.getAttribute("cart");
-		Account account = (Account) sess.getAttribute("account");
-		int accId = account.getAccId();
+		User user = (User) sess.getAttribute("user");
+
 
 		DAO dao = new DAO();
-		User user = dao.getUserByAccId(accId);
 
 		request.setAttribute("totalPrice", calculateTotalPrice(listProduct));
 		request.setAttribute("user", user);
-		request.setAttribute("account", account);
 		request.setAttribute("listProduct", listProduct);
 
 		try {
@@ -88,7 +87,7 @@ public class SendEmailController extends HttpServlet {
 		content.append(String.format(
 				"User ID: %s%nFirst name: %s%nLast name: %s%nAddress: %s%nBirthday: %s%nGender: %s%nPhone: %s%n",
 				user.getUserId(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getBirthDay(),
-				user.getGender(), user.getPhone()));
+				 user.getPhone()));
 
 		content.append("Products:\n");
 		for (Product product : listProduct) {

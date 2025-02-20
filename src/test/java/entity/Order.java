@@ -7,19 +7,40 @@ public class Order {
 		private Date orderDate;
 		private User user;
 		private String deliveryStatus;
-		private int progress;
+		private double totalValue;
+		private String paymentMethod;
 
-		public Order(int id, Date orderDate, User user, String deliveryStatus, int progress) {
+	
+
+		public Order(int id, Date orderDate, User user, String deliveryStatus, double totalValue,
+				String paymentMethod) {
 			super();
 			this.id = id;
 			this.orderDate = orderDate;
 			this.user = user;
 			this.deliveryStatus = deliveryStatus;
-			this.progress = progress;
+			this.totalValue = totalValue;
+			this.paymentMethod = paymentMethod;
 		}
 
 		public int getId() {
 			return id;
+		}
+
+		public double getTotalValue() {
+			return totalValue;
+		}
+
+		public void setTotalValue(double totalValue) {
+			this.totalValue = totalValue;
+		}
+
+		public String getPaymentMethod() {
+			return paymentMethod;
+		}
+
+		public void setPaymentMethod(String paymentMethod) {
+			this.paymentMethod = paymentMethod;
 		}
 
 		public void setId(int id) {
@@ -51,12 +72,10 @@ public class Order {
 			this.deliveryStatus = deliveryStatus;
 		}
 
-		public int getProgress() {
-			return progress;
-		}
-
-		public void setProgress(int progress) {
-			this.progress = progress;
+		@Override
+		public String toString() {
+			return "Order [id=" + id + ", orderDate=" + orderDate + ", user=" + user + ", deliveryStatus="
+					+ deliveryStatus + ", totalValue=" + totalValue + ", paymentMethod=" + paymentMethod + "]";
 		}
 
 }

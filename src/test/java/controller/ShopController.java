@@ -5,14 +5,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DAO;
 import entity.Category;
+import entity.Images;
 import entity.Product;
-
+@WebServlet("/ShopController")
 public class ShopController extends HttpServlet {
 
 	@Override
@@ -59,7 +61,13 @@ public class ShopController extends HttpServlet {
 	    request.setAttribute("currentPage", currentPage); // Đưa trang hiện tại vào để làm điều hướng
 	    request.setAttribute("cateList", cateList);
 	   
-	    
+	    try {
+			List<Images> sliderImages = dao.getAllImages("slider");
+			request.setAttribute("sliderImages", sliderImages);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	    // Chuyển hướng tới trang Shop.jsp
 	    request.getRequestDispatcher("Shop.jsp").forward(request, response);
 	}

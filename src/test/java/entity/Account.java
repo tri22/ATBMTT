@@ -4,16 +4,16 @@ public class Account {
 	private int accId;
 	private String username;
 	private String password;
-	private boolean isAdmin;
+	private String role; // "admin" hoặc "user"
 
 	public Account() {
 	}
 
-	public Account(int accId, String username, String password, boolean isAdmin) {
+	public Account(int accId, String username, String password,String role) {
 		this.accId = accId;
 		this.username = username;
 		this.password = password;
-		this.isAdmin = isAdmin;
+		this.role =role;
 	}
 
 	public int getAccId() {
@@ -40,17 +40,15 @@ public class Account {
 		this.password = password;
 	}
 
-	public boolean isIsAdmin() {
-		return isAdmin;
-	}
+	   public String getRole() {
+	        return role;
+	    }
 
-	public void setIsAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
-	}
-
+	    public void setRole(String role) {
+	        this.role = role;
+	    }
 	@Override
 	public String toString() {
-		return "Account [id=" + accId + ", username=" + username + ", password=" + password + ", isAdmin=" + isAdmin
-				+ "]";
+		return "Account [id=" + accId + ", username=" + username + ", password=" + password + "]";
 	}
 }
