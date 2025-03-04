@@ -57,7 +57,7 @@
 			<div class="container">
 				<!-- class cart list khi css thì thêm overflow-x = scroll vào để khỏi cần tạo thêm class bên dưới như mẫu -->
 				<div class="content-cart-part1">
-					<table class="table">
+					<table class="table  text-center align-middle" >
 						<thead class="table-head">
 							<tr>
 								<th>&nbsp</th>
@@ -69,41 +69,51 @@
 							</tr>
 						</thead>
 
-						<tbody class=table-body>
-							<c:forEach items="${listProduct}" var="o">
+						<tbody class="table-body">
+							<c:forEach items="${cartItems}" var="item">
 								<tr>
+									<!-- Xóa sản phẩm -->
 									<td class="product-remove"><a
-										href="DeleteCartController?id=${o.id}" onclick="deleteCart()">
-											<i class="bi-x"></i>
-									</a> <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-										<script type="text/javascript">
-		                                </script></td>
+										href="DeleteCartController?id=${item.product.id}"
+										onclick="deleteCart()"> <i class="bi-x"></i>
+									</a></td>
 
-									<td class="product-image"><a
-										href="SingleController?id=${o.id}"><img
-											src="${o.imageUrl}" alt=""></a></td>
-
-									<td class="product-name">
-										<h3>${o.name}</h3>
-										<p>${o.content}</p>
+									<!-- Hình ảnh sản phẩm -->
+									<td >
+									<a href="SingleController?id=${o.id}"> <img
+										src="data:image/jpeg;base64,${item.product.imageBase64}" alt="${item.product.name}"
+										style="height: 100px" />
+									</a>
 									</td>
 
-									<td class="product-price"><fmt:setLocale value="en_US" />
-										<fmt:formatNumber value="${o.price}" type="currency" /></td>
+									<!-- Tên sản phẩm -->
+									<td class="product-name">
+										<h3>${item.product.name}</h3>
+									</td>
 
+									<!-- Giá sản phẩm -->
+									<td class="product-price"><fmt:setLocale value="en_US" />
+										<fmt:formatNumber value="${item.product.price}"
+											type="currency" /></td>
+
+									<!-- Số lượng sản phẩm -->
 									<td class="product-quantity">
-										<div class="count">
+										<div class="">
 											<input type="number" name="weight" id="quantity"
-												class="quantity-form" value="${o.weight}" min="1" disabled>
+												class="quantity-form" value="${item.weight}" min="1"
+												disabled>
 										</div>
 									</td>
 
+									<!-- Tổng tiền -->
 									<td class="product-total"><fmt:setLocale value="en_US" />
-										<fmt:formatNumber value="${o.cost(o.weight)}" type="currency" />
-									</td>
+										<fmt:formatNumber
+											value="${item.weight * item.product.price}"
+											type="currency" /></td>
 								</tr>
 							</c:forEach>
 						</tbody>
+
 					</table>
 				</div>
 
@@ -184,7 +194,7 @@
 
 		<jsp:include page="Footer.jsp"></jsp:include>
 	</div>
-
+	
 	<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 	<script src="./cart-assest/js/cart-jquery.js?version=1"></script>
 </body>

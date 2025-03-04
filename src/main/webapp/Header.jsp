@@ -387,7 +387,7 @@
 						class="nav-link">Contact</a></li>
 
 					<li class="list-item-head2"><a href="CartController"
-						class="nav-link icon-cart"><i class="bi-cart-fill">[0]</i></a></li>
+						class="nav-link icon-cart"><i class="bi-cart-fill"></i></a></li>
 
 					<!-- Trường hợp nếu đã đăng nhập -->
 					<c:if test="${sessionScope.user != null}">

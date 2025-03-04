@@ -20,7 +20,7 @@ public class AddCartController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		DAO dao = new DAO();
-		String id = request.getParameter("id");
+		int id = Integer.parseInt( request.getParameter("id"));
 		Product product = dao.getProductById(id);
 
 		HttpSession session = request.getSession();

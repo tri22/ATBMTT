@@ -172,14 +172,15 @@ public class Product {
 
 
 
+	
+
+
 	@Override
 	public String toString() {
 		return "Product [id=" + id + ", description=" + description + ", name=" + name + ", price=" + price
 				+ ", weight=" + weight + ", rating=" + rating + ", sale=" + sale + ", category=" + category + ", image="
-				+ "]";
+				+ image + ", imageBase64=" + imageBase64 + "]";
 	}
-
-
 
 	public double cost(int weight) {
 		return weight * price;

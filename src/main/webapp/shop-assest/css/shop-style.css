@@ -253,14 +253,28 @@ body {
     border-radius: 50%;
 }
 
+
+
 #content-shop .option .wrap-option i {
     font-size: 12px;
 }
 
-#content-shop .option .wrap-option .icon-shopping {
+.icon-cart{
     margin-left: 0.25rem;
     margin-right: 0.25rem;
+     display: flex;
+    color: #fff;
+    background: #82ae46;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
 }
+
+
+
 
 /* Phần hover cho hình ảnh */
 #content-shop .img-wrapper:hover {

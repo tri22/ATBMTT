@@ -1,7 +1,10 @@
 package controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import dao.DAO;
 import entity.Account;
+import entity.CartItem;
 import entity.Product;
 import entity.User;
 @WebServlet("/CheckoutController")
@@ -22,23 +26,27 @@ public class CheckoutController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		List<Product> listProduct = (List<Product>) session.getAttribute("cart");
 		User user = (User) session.getAttribute("user");
-
-
 		DAO dao = new DAO();
 	
-
-//		Tính tổng price của cart
 		double totalPrice = 0;
-		if (listProduct.size() != 0) {
-			for (Product p : listProduct) {
-				totalPrice += p.cost(p.getWeight());
-			}
-		}
+		Map<Integer,CartItem> cart = (Map<Integer,CartItem>) session.getAttribute("cart");
+
+	
+	
+		    for (CartItem item : cart.values()) {
+		        int weight = item.getWeight();
+		        Product product = item.getProduct();
+		        double price = product.getPrice();
+
+		        totalPrice+= weight*price;
+		    }
+		
+
+		// Gửi danh sách sản phẩm có trong giỏ hàng sang JSP
+		request.setAttribute("cart", cart);
 		request.setAttribute("totalPrice", totalPrice);
 		request.setAttribute("user", user);
-		request.setAttribute("listProduct", listProduct);
 		request.getRequestDispatcher("Checkout.jsp").forward(request, response);
 	}
 

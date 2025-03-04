@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import context.DBContext;
 import entity.Account;
+import entity.Cart;
+import entity.CartItem;
 import entity.Category;
 import entity.Images;
 import entity.Order;
@@ -133,17 +136,28 @@ public class DAO {
 		return list;
 	}
 
-	public Product getProductById(String id) {
+	public Product getProductById(int id) {
 		String query = "select * from products\n" + "where id = ?";
 
 		try {
 			conn = new DBContext().getConnection();
 			ps = conn.prepareStatement(query);
-			ps.setString(1, id);
+			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				return new Product(rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5), rs.getDouble(6),
+				// Xử lý ảnh từ Blob
+				Blob imageBlob = rs.getBlob("image");
+				String base64Image = "";
+				if (imageBlob != null) {
+					byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+					base64Image = Base64.getEncoder().encodeToString(imageBytes);
+				}
+
+				Product product = new Product(rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5), rs.getDouble(6),
 						rs.getDouble(7), new Category(rs.getInt(8), null), rs.getBlob(9));
+				product.setImageBase64(base64Image); // Đặt thêm ảnh base64 để hiển thị
+
+				return product;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -170,13 +184,13 @@ public class DAO {
 		return list;
 	}
 
-	public void deleteProduct(String id) {
+	public void deleteProduct(int id) {
 		String query = "delete products\n" + "where id = ?";
 
 		try {
 			conn = new DBContext().getConnection();
 			ps = conn.prepareStatement(query);
-			ps.setString(1, id);
+			ps.setInt(1, id);
 			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -506,6 +520,136 @@ public class DAO {
 	    }
 
 	    return images;
+	}
+
+	public Cart getCartByUserId(int userId)   {
+	    String sql = "SELECT * FROM carts WHERE user_id = ?";
+	
+
+		try {
+			conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(sql);
+	        ps.setInt(1, userId);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	        	return new Cart(rs.getInt("id"),  rs.getDouble("total_price"), getUserById(userId));
+	        }
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+	
+	private Cart getCartById(int id) {
+		 String sql = "SELECT * FROM cart WHERE id = ?";
+		 try  {
+			 	conn = new DBContext().getConnection();
+				ps = conn.prepareStatement(sql);
+		        ps.setInt(1, id);
+		        ResultSet rs = ps.executeQuery();
+		        if (rs.next()) {
+		        	return new Cart(rs.getInt("id"), rs.getDouble("total_price"),getUserById(rs.getInt("user_id")));
+		        }
+		    } catch (SQLException | ClassNotFoundException e) {
+		        e.printStackTrace();
+		    }
+		return null;
+	}
+
+
+	public Cart createCart(int userId) {
+		String sql = "INSERT INTO carts (user_id, total_price) VALUES (?, 0)";
+	    try  {
+	    	conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(sql);
+	        ps.setInt(1, userId);
+	        ps.executeUpdate();
+	     // Lấy ID vừa được tạo
+	        try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+	            if (generatedKeys.next()) {
+	                int cartId = generatedKeys.getInt(1);
+	                System.out.println("Cart ID: " + cartId);
+	            } else {
+	                throw new SQLException("Tạo giỏ hàng thất bại, không lấy được ID.");
+	            }
+	        }
+
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+
+	public CartItem getCartItem(int cartId, int productId) {
+	    String sql = "SELECT * FROM cart_items WHERE cart_id = ? AND product_id = ?";
+	    try  {
+	    	conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(sql);
+	        ps.setInt(1, cartId);
+	        ps.setInt(2, productId);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            return new CartItem(rs.getInt("id"), getProductById(productId), rs.getInt("weight"), getCartById(cartId));
+	        }
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+	
+	public List<CartItem> getListCartItemByCartId(int cartId) {
+	    String sql = "SELECT * FROM cart_items WHERE cart_id = ?";
+	    List<CartItem> cartItems = new ArrayList<>(); // ✅ Danh sách chứa nhiều CartItem
+
+	    try  {
+	    	conn = new DBContext().getConnection();
+			ps = conn.prepareStatement(sql);
+	        ps.setInt(1, cartId);
+	        ResultSet rs = ps.executeQuery();
+
+	        while (rs.next()) { // ✅ Duyệt tất cả dòng dữ liệu
+	            int id = rs.getInt("id");
+	            int productId = rs.getInt("product_id"); // ✅ Lấy productId từ ResultSet
+	            int weight = rs.getInt("weight"); 
+
+	            Product product = getProductById(productId); // ✅ Lấy sản phẩm từ DB
+	            Cart cart = getCartById(cartId); // ✅ Lấy giỏ hàng từ DB
+
+	            CartItem cartItem = new CartItem(id, product, weight, cart);
+	            cartItems.add(cartItem); // ✅ Thêm vào danh sách
+	        }
+
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+
+	    return cartItems; // ✅ Trả về danh sách chứa nhiều CartItem
+	}
+
+
+
+	public void addCartItem(int cartId, int productId, int weight) {
+	    String sql = "INSERT INTO cart_items (cart_id, product_id, weight) VALUES (?, ?, ?)";
+	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, cartId);
+	        ps.setInt(2, productId);
+	        ps.setInt(3, weight);
+	        ps.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public void updateCartItem(int cartId, int productId, int quantity) {
+	    String sql = "UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_id = ?";
+	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, quantity);
+	        ps.setInt(2, cartId);
+	        ps.setInt(3, productId);
+	        ps.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	public static void main(String[] args) {

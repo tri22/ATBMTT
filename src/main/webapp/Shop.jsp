@@ -119,10 +119,19 @@
 									<c:if test="${o.weight != 0}">
 										<div class="option">
 											<div class="wrap-option">
-												<a href="" class="icon-menu"> <i class="bi-list"></i>
-												</a> <a href="" class="icon-shopping"> <i class="bi-cart4"></i>
-												</a> <a href="" class="icon-like"> <i class="bi-heart-fill"></i>
+												<a href="" class="icon-menu"> <i class="bi-list"></i></a>
+												<form action="CartController" method="post">
+													<input type="hidden" name="productId" value="${o.id}" />
+													<button type="submit" class="icon-cart"
+														>
+														<i class="bi-cart4"></i>
+													</button>
+												</form>
+
+												
+												<a href="" class="icon-like"> <i class="bi-heart-fill"></i>
 												</a>
+												
 											</div>
 										</div>
 									</c:if>
