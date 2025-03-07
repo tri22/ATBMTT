@@ -120,8 +120,9 @@
 										<div class="option">
 											<div class="wrap-option">
 												<a href="" class="icon-menu"> <i class="bi-list"></i></a>
-												<form action="CartController" method="post">
+												<form class = "addToCartForm">
 													<input type="hidden" name="productId" value="${o.id}" />
+													<input type="hidden" name="quantity" value=1 />
 													<button type="submit" class="icon-cart"
 														>
 														<i class="bi-cart4"></i>
@@ -186,8 +187,36 @@
 		<jsp:include page="Footer.jsp"></jsp:include>
 	</div>
 
-	<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
-	<script src="./shop-assest/js/shop-jquery.js?version=1"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+	$(document).ready(function () {
+	    $(".addToCartForm").submit(function (event) {
+	        event.preventDefault(); // Ngăn chặn reload trang
+
+	        var formData = $(this).serialize(); // Lấy dữ liệu từ form
+
+	        $.ajax({
+	            type: "POST",
+	            url: "CartController",
+	            data: formData,
+	            dataType: "json", // Định dạng dữ liệu JSON
+	            success: function (response) {
+	                if (response.status === "success") {
+	                    $("#cartCount").text(response.cartSize); // Cập nhật số lượng giỏ hàng
+	                    alert(response.message);
+	                } else {
+	                    alert(response.message); // Hiển thị lỗi
+	                }
+	            },
+	            error: function () {
+	                alert("Có lỗi xảy ra, vui lòng thử lại!");
+	            }
+	        });
+	    });
+	});
+
+</script>
+	<!-- <script src="./shop-assest/js/shop-jquery.js?version=1"></script> -->
 
 	<!-- link css icon-icons -->
 	<script type="module"

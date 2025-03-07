@@ -98,12 +98,17 @@
 
 									<!-- Số lượng sản phẩm -->
 									<td class="product-quantity">
-										<div class="">
-											<input type="number" name="weight" id="quantity"
-												class="quantity-form" value="${item.weight}" min="1"
-												disabled>
+										<div class="quantity-wrapper">
+											<input id="quantity-edit-${index}" type="number"
+												name="weight" class="quantity-form" value="${item.weight}" min="1">
+											<button type="button" class="btn-update"
+												data-id="${item.product.id}">
+												<i class="bi bi-check"></i>
+											</button>
 										</div>
 									</td>
+
+
 
 									<!-- Tổng tiền -->
 									<td class="product-total"><fmt:setLocale value="en_US" />
@@ -196,6 +201,47 @@
 	</div>
 	
 	<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+	<script>
+	$(document).ready(function () {
+	    $(".btn-update").off("click").on("click", function () {
+	        let productId = $(this).data("id");
+	        let index = $(this).data("index"); // Lấy chỉ số của sản phẩm
+	        let quantityInput = $(`#quantity-edit-${index}`); // Chọn input theo index
+	        let newQuantity = parseInt(quantityInput.val());
+			console.log(newQuantity)
+
+	        if (quantityInput.length === 0) {
+	            alert(`❌ Không tìm thấy input `);
+	            return;
+	        }
+
+	        
+	        if (isNaN(newQuantity) || newQuantity < 1) {
+	            alert("❌ Số lượng không hợp lệ! Vui lòng nhập số hợp lệ.");
+	            return;
+	        }
+
+	        $.ajax({
+	            type: "POST",
+	            url: "CartController",
+	            data: { productId: productId, quantity: newQuantity },
+	            dataType: "json",
+	            success: function (response) {
+	                console.log("AJAX Response:", response);
+	                if (response.status === "success") {
+	                    alert("✅ Cập nhật giỏ hàng thành công!");
+	                } else {
+	                    alert(response.message);
+	                }
+	            },
+	            error: function () {
+	                alert("❌ Có lỗi xảy ra, vui lòng thử lại!");
+	            }
+	        });
+	    });
+	});
+
+</script>
 	<script src="./cart-assest/js/cart-jquery.js?version=1"></script>
 </body>
 </html>

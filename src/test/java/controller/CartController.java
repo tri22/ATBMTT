@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,10 @@ public class CartController extends HttpServlet {
 	    }
 	    
 	    List<CartItem> cartItems = dao.getListCartItemByCartId(cart.getId());
-	   
+
 	    // ✅ Cập nhật giỏ hàng vào session để giữ trạng thái
 	    session.setAttribute("cartItems", cartItems);
+	   
 	
 		try {
 			List<Images> sliderImages = dao.getAllImages("slider");
@@ -54,43 +56,53 @@ public class CartController extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		    DAO dao = new DAO();
-		    HttpSession session = request.getSession();
-		    User user = (User) session.getAttribute("user");
-		    System.out.println(user.toString());
-		    int productId = Integer.parseInt(request.getParameter("productId"));
-		    String quantityParam = request.getParameter("quantity");
-		    int quantity = (quantityParam != null && !quantityParam.isEmpty()) ? Integer.parseInt(quantityParam) : 1;
+	        throws ServletException, IOException {
+	    response.setContentType("application/json");
+	    response.setCharacterEncoding("UTF-8");
+	    
+	    DAO dao = new DAO();
+	    HttpSession session = request.getSession();
+	    User user = (User) session.getAttribute("user");
 
-		    
-		    // Lấy giỏ hàng 
+	    PrintWriter out = response.getWriter();
+	    try {
+	        if (user == null) {
+	            out.print("{\"status\": \"error\", \"message\": \"Bạn chưa đăng nhập!\"}");
+	            return;
+	        }
 
-		
-			Cart cart = (Cart) dao.getCartByUserId(user.getUserId());
-		    if (cart == null) {
-		        cart = dao.createCart(user.getUserId());
-		    }
-		    // Lấy sản phẩm từ database
-		    Product product = dao.getProductById(productId);
+	        int productId = Integer.parseInt(request.getParameter("productId"));
+	        String quantityParam = request.getParameter("quantity");
+	        int quantity = Integer.parseInt(quantityParam) ;
+	        System.out.println(quantity+"mới");
 
-		    CartItem cartItem = dao.getCartItem(cart.getId(), productId);
+	        // Lấy giỏ hàng
+	        Cart cart = (Cart) dao.getCartByUserId(user.getUserId());
+	        if (cart == null) {
+	            cart = dao.createCart(user.getUserId());
+	        }
 
-		    if (cartItem != null) {
-		        dao.updateCartItem(cart.getId(), productId, cartItem.getWeight() + quantity);
-		    } else {
-		        dao.addCartItem(cart.getId(), productId, quantity);
-		    }
+	        // Kiểm tra sản phẩm trong giỏ hàng
+	        CartItem cartItem = dao.getCartItem(cart.getId(), productId);
+	        if (cartItem != null) {
+	        	 System.out.println(dao.updateCartItem(cart.getId(), productId,  quantity));
+	        } else {
+	            dao.addCartItem(cart.getId(), productId, quantity);
+	        }
 
-		    List<CartItem> cartItems = dao.getListCartItemByCartId(cart.getId());
-		    for (CartItem cartItem2 : cartItems) {
-				System.out.println(cartItem2.getProduct());
-			}
-		    // ✅ Cập nhật giỏ hàng vào session để giữ trạng thái
-		    session.setAttribute("cartItems", cartItems);
+	        // Lấy danh sách giỏ hàng cập nhật
+	        List<CartItem> cartItems = dao.getListCartItemByCartId(cart.getId());
 
-		    // Chuyển hướng về trang giỏ hàng
-		    response.sendRedirect("CartController");
-		}
+	        session.setAttribute("cartItems", cartItems);
+
+	        // ✅ Trả về JSON
+	        out.print("{\"status\": \"success\", \"message\": \"Thêm vào giỏ hàng thành công!\", \"cartSize\": " + cartItems.size() + "}");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        out.print("{\"status\": \"error\", \"message\": \"Có lỗi xảy ra, vui lòng thử lại!\"}");
+	    } finally {
+	        out.flush();
+	    }
+	}
 
 }

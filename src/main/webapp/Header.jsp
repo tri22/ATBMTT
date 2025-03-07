@@ -143,6 +143,9 @@
 	color: #fff;
 }
 
+
+
+
 @media ( max-width : 992px) {
 	#header.sticky.visible button {
 		outline: none;
@@ -386,8 +389,11 @@
 					<li class="list-item-head2"><a href="ContactController"
 						class="nav-link">Contact</a></li>
 
-					<li class="list-item-head2"><a href="CartController"
-						class="nav-link icon-cart"><i class="bi-cart-fill"></i></a></li>
+					<li class="list-item-head2">
+						<a href="CartController" class="nav-link icon-cart">
+							<i class="bi-cart-fill"></i>
+						</a>
+					</li>
 
 					<!-- Trường hợp nếu đã đăng nhập -->
 					<c:if test="${sessionScope.user != null}">

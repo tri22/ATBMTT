@@ -8,10 +8,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import dao.DAO;
+import entity.Cart;
+import entity.CartItem;
 import entity.Images;
 import entity.Product;
+import entity.User;
 @WebServlet("/HomeController")
 public class HomeController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -20,6 +24,7 @@ public class HomeController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		DAO dao = new DAO();
+		
 		List<Product> productList = dao.getAllProduct();
 		try {
 			List<Images> images = dao.getAllImages("home");
@@ -30,8 +35,9 @@ public class HomeController extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		request.setAttribute("productList", productList);
 		
+		
+		request.setAttribute("productList", productList);
 		request.getRequestDispatcher("Home.jsp").forward(request, response);
 	}
 

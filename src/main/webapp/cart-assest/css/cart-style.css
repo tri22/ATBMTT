@@ -189,6 +189,26 @@ body {
     bordeR: 1px solid rgba(0, 0, 0, 0.05);
 }
 
+.quantity-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-decrease, .btn-increase {
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-decrease:hover, .btn-increase:hover {
+    background-color: #e9ecef;
+}
+
+
 .content-cart-part1 .table-body .product-quantity .count {
 	display: flex;
     margin-bottom: 16px;

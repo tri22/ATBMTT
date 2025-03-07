@@ -153,7 +153,7 @@ public class DAO {
 					base64Image = Base64.getEncoder().encodeToString(imageBytes);
 				}
 
-				Product product = new Product(rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5), rs.getDouble(6),
+				Product product = new Product(rs.getInt("Id"),rs.getString(2), rs.getString(3), rs.getDouble(4), rs.getInt(5), rs.getDouble(6),
 						rs.getDouble(7), new Category(rs.getInt(8), null), rs.getBlob(9));
 				product.setImageBase64(base64Image); // Đặt thêm ảnh base64 để hiển thị
 
@@ -541,7 +541,7 @@ public class DAO {
 	}
 	
 	private Cart getCartById(int id) {
-		 String sql = "SELECT * FROM cart WHERE id = ?";
+		 String sql = "SELECT * FROM carts WHERE id = ?";
 		 try  {
 			 	conn = new DBContext().getConnection();
 				ps = conn.prepareStatement(sql);
@@ -639,17 +639,34 @@ public class DAO {
 	        e.printStackTrace();
 	    }
 	}
-	
-	public void updateCartItem(int cartId, int productId, int quantity) {
-	    String sql = "UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_id = ?";
-	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-	        ps.setInt(1, quantity);
-	        ps.setInt(2, cartId);
-	        ps.setInt(3, productId);
-	        ps.executeUpdate();
+	public String updateCartItem(int cartId, int productId, int quantity) {
+	    String updateSql = "UPDATE cart_items SET weight = ? WHERE cart_id = ? AND product_id = ?";
+	    String selectSql = "SELECT weight FROM cart_items WHERE cart_id = ? AND product_id = ?";
+	    String res = "";
+
+	    try (PreparedStatement updatePs = conn.prepareStatement(updateSql);
+	         PreparedStatement selectPs = conn.prepareStatement(selectSql)) {
+	        
+	        // Cập nhật số lượng
+	        updatePs.setInt(1, quantity);
+	        updatePs.setInt(2, cartId);
+	        updatePs.setInt(3, productId);
+	        updatePs.executeUpdate();
+
+	        // Lấy trọng lượng (weight) sau khi cập nhật
+	        selectPs.setInt(1, cartId);
+	        selectPs.setInt(2, productId);
+	        ResultSet rs = selectPs.executeQuery();
+	        
+	        if (rs.next()) {
+	            res = rs.getInt("weight") + "";
+	            System.out.println( rs.getInt("weight")+"update");
+	        }
+	        
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
+	    return res;
 	}
 
 	public static void main(String[] args) {
